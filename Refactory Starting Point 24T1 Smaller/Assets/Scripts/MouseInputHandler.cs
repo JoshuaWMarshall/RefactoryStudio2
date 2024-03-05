@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MouseHandler : MonoBehaviour
+public class MouseInputHandler : MonoBehaviour
 {
     public LayerMask layersToHit;// the layers we are going to allowed to hit.
     public GameManager gameManager; // a reference to our game manager;

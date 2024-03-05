@@ -99,7 +99,7 @@ public class GameManager : MonoBehaviour
     /// <param name="character"></param>
     /// <param name="distanceThreshold"></param>
     /// <returns></returns>
-    public bool IsPlayerToCloseToCharacter(Transform character, float distanceThreshold)
+    public bool IsPlayerTooCloseToCamera(Transform character, float distanceThreshold)
     {
         if (Vector3.Distance(arCamera.position, character.position) <= distanceThreshold)
         {
@@ -166,7 +166,7 @@ public class GameManager : MonoBehaviour
     /// A function to handle the characters telling us that the player is to close, so play some music.
     /// </summary>
     /// <param name="isRunningAway"></param>
-    public void RunningAwayFromPlayer(bool isRunningAway)
+    public void RunningAwayFromCamera(bool isRunningAway)
     {
         if (isRunningAway == areCharactersRunningAway) // don't do anything if the value is the same that is coming in.
         {

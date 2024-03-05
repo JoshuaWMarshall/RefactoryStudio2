@@ -11,44 +11,44 @@ public class CharacterController : MonoBehaviour
     /// </summary>
     public enum CharacterStates {Idle,Roaming,Waving,Playing,Fleeing}
 
-    public CharacterStates currentCharacterState; // the current state that our character is in.
+    public CharacterStates currentCharacterState;   // the current state that our character is in.
 
   
  
 
-    public GameManager gameManager; // a reference to our game manager
-    public Rigidbody rigidBody; // reference to our rigidbody
+    public GameManager gameManager;     // a reference to our game manager
+    public Rigidbody rigidBody;         // reference to our rigidbody
 
     // roaming state variabless
-    private Vector3 currentTargetPosition; // the target we are currently heading towards
+    private Vector3 currentTargetPosition;  // the target we are currently heading towards
     private Vector3 previousTargetPosition; // the last target we were heading towards.
-    public float moveSpeed = 3; // how fast our character is moving.
-    public float minDistanceToTarget = 1; // how close should we get to our target?
+    public float moveSpeed = 3;             // how fast our character is moving.
+    public float minDistanceToTarget = 1;   // how close should we get to our target?
 
     // idle state variables
-    public float idleTime = 2; // Once we reach our target position how long should we wait till we get another position?
-    private float currentIdleWaitTime; // the time we are waiting till, we can move again.
+    public float idleTime = 2;              // Once we reach our target position how long should we wait till we get another position?
+    private float currentIdleWaitTime;      // the time we are waiting till, we can move again.
 
     // Waving state varaiables
-    public float waveTime = 2; // the time spent waving
-    private float currentWaveTime; // the current time to wave till.
-    public float distanceToStartWavingFrom = 4f; // the distance that will be checking to see if we are in range to wave at another character.
-    private CharacterController[] allCharactersInScene; // a collection of references to all characters in our scene.
-    public float timeBetweenWaves = 5; // the time between when we are allowed to wave again.
-    private float currentTimeBetweenWaves; // the current time for our next wave to be iniated.
+    public float waveTime = 2;                              // the time spent waving
+    private float currentWaveTime;                          // the current time to wave till.
+    public float distanceToStartWavingFrom = 4f;            // the distance that will be checking to see if we are in range to wave at another character.
+    private CharacterController[] allCharactersInScene;     // a collection of references to all characters in our scene.
+    public float timeBetweenWaves = 5;                      // the time between when we are allowed to wave again.
+    private float currentTimeBetweenWaves;                  // the current time for our next wave to be iniated.
 
     // Fleeing state variables
-    public float distanceThresholdOfPlayer = 5;// the distance that is "to" close for the player to be to us.
+    public float distanceThresholdOfPlayer = 5;     // the distance that is "to" close for the player to be to us.
 
 
     // Playing state variables
-    private Transform currentSoccerBall = null; // a reference to the current soccerball;
-    public GameObject selfIdentifier; // a reference to our identification colour.
-    public GameObject myGoal; // reference to this characters goal.
-    public float soccerBallKickForce = 10; // the amount of force the character can use to kick the ball.
-    public float soccerBallInteractDistance = 0.25f;// if the soccerball is close nough, then we can kick it.
-    public float passingAnimationDelay = 0.5f; // a delay of the soccer animation before they kick.
-    private float currentTimeTillPassingAnimationPlays; // the time at which the animation will play and we should kick
+    private Transform currentSoccerBall = null;     // a reference to the current soccerball;
+    public GameObject selfIdentifier;   // a reference to our identification colour.
+    public GameObject myGoal;   // reference to this characters goal.
+    public float soccerBallKickForce = 10;  // the amount of force the character can use to kick the ball.
+    public float soccerBallInteractDistance = 0.25f;     // if the soccerball is close nough, then we can kick it.
+    public float passingAnimationDelay = 0.5f;  // a delay of the soccer animation before they kick.
+    private float currentTimeTillPassingAnimationPlays;     // the time at which the animation will play and we should kick
 
     public AnimationHandler animationHandler; // a reference to our animation handler script.
 
@@ -74,7 +74,7 @@ public class CharacterController : MonoBehaviour
     {
         if(gameManager != null) // if the game is not null
         {
-            gameManager.RunningAwayFromPlayer(false); // then tell it there are no characters in range.
+            gameManager.RunningAwayFromCamera(false); // then tell it there are no characters in range.
         }
     }
 
@@ -91,7 +91,44 @@ public class CharacterController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-     //   Debug.Log("Current Time is: " + Time.time);
+        //if (currentCharacterState == CharacterStates.Roaming)
+        //{
+
+        //}
+        //else if (currentCharacterState == CharacterStates.Idle)
+        //{
+
+        //}
+        //else
+        //{ }
+
+
+        //switch(currentCharacterState)
+        //{
+        //    case CharacterStates.Roaming:
+        //        {
+        //            HandleRoamingState();
+        //            break;
+        //        }
+        //    case CharacterStates.Idle:
+        //        {
+        //            break;
+        //        }
+        //    case CharacterStates.Roaming:
+        //        {
+        //            break;
+        //        }
+        //    case CharacterStates.Roaming:
+        //        {
+        //            break;
+        //        }
+        //    case CharacterStates.Roaming:
+        //        {
+        //            break;
+        //        }
+        //}
+
+        //   Debug.Log("Current Time is: " + Time.time);
         LookAtTargetPosition(); // always look towards the position we are aiming for.
         HandleRoamingState(); // call our roaming state function
         HandleIdleState(); // call our idle state function
@@ -191,11 +228,11 @@ public class CharacterController : MonoBehaviour
     /// </summary>
     private void HandleFleeingState()
     {
-        if (currentCharacterState != CharacterStates.Fleeing && gameManager.IsPlayerToCloseToCharacter(transform, distanceThresholdOfPlayer))
+        if (currentCharacterState != CharacterStates.Fleeing && gameManager.IsPlayerTooCloseToCamera(transform, distanceThresholdOfPlayer))
         {
             // we should be fleeing
             currentCharacterState = CharacterStates.Fleeing;
-            gameManager.RunningAwayFromPlayer(true); // we are fleeing from the player play our music.
+            gameManager.RunningAwayFromCamera(true); // we are fleeing from the camera play our music.
             // here would should be running
             if (animationHandler.CurrentState != AnimationHandler.AnimationState.Running)
             {
@@ -203,7 +240,7 @@ public class CharacterController : MonoBehaviour
             }
 
         }
-        else if (currentCharacterState == CharacterStates.Fleeing && gameManager.IsPlayerToCloseToCharacter(transform, distanceThresholdOfPlayer))
+        else if (currentCharacterState == CharacterStates.Fleeing && gameManager.IsPlayerTooCloseToCamera(transform, distanceThresholdOfPlayer))
         {
             /// if we are still too far away move closer
             if (currentCharacterState == CharacterStates.Fleeing && Vector3.Distance(transform.position, CurrentTargetPosition) > minDistanceToTarget)
@@ -218,12 +255,12 @@ public class CharacterController : MonoBehaviour
             }
 
         }
-        else if (currentCharacterState == CharacterStates.Fleeing && gameManager.IsPlayerToCloseToCharacter(transform, distanceThresholdOfPlayer) == false)
+        else if (currentCharacterState == CharacterStates.Fleeing && gameManager.IsPlayerTooCloseToCamera(transform, distanceThresholdOfPlayer) == false)
         {
             // if we are still fleeing, then we want to transition back to our roaming state.
             currentCharacterState = CharacterStates.Roaming;
             CurrentTargetPosition = gameManager.ReturnRandomPositionOnField();
-            gameManager.RunningAwayFromPlayer(false); // stop fleeing from the player so go back to the original music.
+            gameManager.RunningAwayFromCamera(false); // stop fleeing from the camera so go back to the original music.
             // here would should be walking
           
         }
