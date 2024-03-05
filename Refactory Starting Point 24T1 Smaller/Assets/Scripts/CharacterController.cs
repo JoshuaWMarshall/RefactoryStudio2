@@ -152,7 +152,7 @@ public class CharacterController : MonoBehaviour
         {
             distanceToTarget = minDistanceToTarget;
         }
-
+        
         /// if we are still too far away move closer
         if (currentCharacterState == CharacterStates.Roaming && Vector3.Distance(transform.position, CurrentTargetPosition) > distanceToTarget)
         {
