@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,17 +26,29 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         Debug.Log("New RandomPosition of:" + ReturnRandomPositionOnField());
         playerOneScore = 0;
         playerTwoScore = 0; // reset our players scores.
         uiManager.DisplayScores(false); // hide our canvases to start with.
         uiManager.UpdateScores(playerOneScore, playerTwoScore); // update our players scores.
+        
+       
     }
-
+    
     // Update is called once per frame
     void Update()
     {
-   
+        if(Input.GetKeyDown(KeyCode.S)) 
+        {
+            SaveData();
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            LoadData();
+        }
+
     }
 
     /// <summary>
@@ -79,6 +92,47 @@ public class GameManager : MonoBehaviour
         return new Vector3(xPosition, yPosition, zPosition);
     }
 
+    public void SaveData()
+    {
+
+        Vector3 vel = currentSoccerBallInstance.GetComponent<Rigidbody>().velocity;
+        CharacterController[] players = GameObject.FindObjectsOfType<CharacterController>();
+        PlayerPrefs.SetFloat("Player One location x", players[0].transform.position.x); // set player one position on x axis.
+        PlayerPrefs.SetFloat("Player One location y", players[0].transform.position.y); // set player one position on y axis.
+        PlayerPrefs.SetFloat("Player One location z", players[0].transform.position.z); // set player one position on z axis.
+        PlayerPrefs.SetFloat("Player Two location x", players[1].transform.position.x); // set player two position on x axis.
+        PlayerPrefs.SetFloat("Player Two location y", players[1].transform.position.y); // set player two position on y axis.
+        PlayerPrefs.SetFloat("Player Two location z", players[1].transform.position.z); // set player two position on z axis.
+        PlayerPrefs.SetInt("Player One Score", playerOneScore); // set player one score.
+        PlayerPrefs.SetInt("Player Two Score", playerTwoScore); // set player two score.        
+        int player1state = (int)players[0].currentCharacterState; // set up player one state.
+        int player2state = (int)players[1].currentCharacterState; // set up player one state.
+        PlayerPrefs.SetFloat("Ball Pos x", currentSoccerBallInstance.transform.position.x); // set up ball position on x axis.
+        PlayerPrefs.SetFloat("Ball Pos y", currentSoccerBallInstance.transform.position.y); // set up ball position on y axis.
+        PlayerPrefs.SetFloat("Ball Pos z", currentSoccerBallInstance.transform.position.z); // set up ball position on z axis.
+        PlayerPrefs.SetFloat("Ball Velocity x", vel.x);
+        PlayerPrefs.SetFloat("Ball Velocity y", vel.y);
+        PlayerPrefs.SetFloat("Ball Velocity z", vel.z);
+        PlayerPrefs.SetInt("playeronestate", player1state);
+        PlayerPrefs.SetInt("playertwostate", player2state);
+    }
+
+    public void LoadData()
+    {
+        CharacterController[] players = GameObject.FindObjectsOfType<CharacterController>();
+        players[0].transform.position = new Vector3(PlayerPrefs.GetFloat("Player One location x") , PlayerPrefs.GetFloat("Player One location y") , PlayerPrefs.GetFloat("Player One location z"));
+        players[1].transform.position = new Vector3(PlayerPrefs.GetFloat("Player Two location x") , PlayerPrefs.GetFloat("Player Two location y") , PlayerPrefs.GetFloat("Player Two location z"));
+        playerOneScore = PlayerPrefs.GetInt("Player One Score"); // get player one score.
+        playerTwoScore = PlayerPrefs.GetInt("Player Two Score"); // get player two score.
+        Vector3 vel = new Vector3();
+        players[0].currentCharacterState = (CharacterController.CharacterStates)PlayerPrefs.GetInt("playeronestate");
+        players[1].currentCharacterState = (CharacterController.CharacterStates)PlayerPrefs.GetInt("playertwostate");
+        vel.x = PlayerPrefs.GetFloat("Ball Velocity x");
+        vel.y = PlayerPrefs.GetFloat("Ball Velocity y");
+        vel.z = PlayerPrefs.GetFloat("Ball Velocity z");
+        currentSoccerBallInstance.GetComponent<Rigidbody>().velocity = vel;
+        currentSoccerBallInstance.transform.position = new Vector3(PlayerPrefs.GetFloat("Ball Pos x"), PlayerPrefs.GetFloat("Ball Pos y"), PlayerPrefs.GetFloat("Ball Pos z"));
+    }
     /// <summary>
     /// this is a debug function, that lets us draw objects in our scene view, its not viewable in the game view.
     /// </summary>

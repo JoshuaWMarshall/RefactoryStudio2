@@ -90,51 +90,40 @@ public class CharacterController : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-        //if (currentCharacterState == CharacterStates.Roaming)
-        //{
+    {      
 
-        //}
-        //else if (currentCharacterState == CharacterStates.Idle)
-        //{
-
-        //}
-        //else
-        //{ }
-
-
-        //switch(currentCharacterState)
-        //{
-        //    case CharacterStates.Roaming:
-        //        {
-        //            HandleRoamingState();
-        //            break;
-        //        }
-        //    case CharacterStates.Idle:
-        //        {
-        //            break;
-        //        }
-        //    case CharacterStates.Roaming:
-        //        {
-        //            break;
-        //        }
-        //    case CharacterStates.Roaming:
-        //        {
-        //            break;
-        //        }
-        //    case CharacterStates.Roaming:
-        //        {
-        //            break;
-        //        }
-        //}
+        switch (currentCharacterState)
+        {
+            case CharacterStates.Roaming:
+                {
+                    HandleRoamingState();
+                    break;
+                }
+            case CharacterStates.Idle:
+                {
+                    HandleIdleState();
+                    break;
+                }
+            case CharacterStates.Waving:
+                {
+                    HandleWavingState();
+                    break;
+                }
+            case CharacterStates.Playing:
+                {
+                    HandlePlayingState();
+                    break;
+                }
+            case CharacterStates.Fleeing:
+                {
+                    HandleFleeingState();
+                    break;
+                }
+        }
 
         //   Debug.Log("Current Time is: " + Time.time);
         LookAtTargetPosition(); // always look towards the position we are aiming for.
-        HandleRoamingState(); // call our roaming state function
-        HandleIdleState(); // call our idle state function
-        HandleWavingState(); // call our waving state function
-        HandleFleeingState(); // call our fleeing state function
-        HandlePlayingState(); // call our playing state function
+        
     }
 
     /// <summary>
@@ -154,7 +143,7 @@ public class CharacterController : MonoBehaviour
         }
         
         /// if we are still too far away move closer
-        if (currentCharacterState == CharacterStates.Roaming && Vector3.Distance(transform.position, CurrentTargetPosition) > distanceToTarget)
+        if (Vector3.Distance(transform.position, CurrentTargetPosition) > distanceToTarget)
         {
             if(currentSoccerBall != null)
             {
@@ -204,8 +193,7 @@ public class CharacterController : MonoBehaviour
     /// </summary>
     private void HandleIdleState()
     {
-        if(currentCharacterState == CharacterStates.Idle)
-        {
+        
             // we must be close enough to our target position.
             // we wait a couple seconds.
             // then find a new position to move to.
@@ -220,7 +208,7 @@ public class CharacterController : MonoBehaviour
             {
                 animationHandler.CurrentState = AnimationHandler.AnimationState.Idle; // set our animation to idle animation
             }
-        }
+        
     }
 
     /// <summary>
@@ -228,7 +216,7 @@ public class CharacterController : MonoBehaviour
     /// </summary>
     private void HandleFleeingState()
     {
-        if (currentCharacterState != CharacterStates.Fleeing && gameManager.IsPlayerTooCloseToCamera(transform, distanceThresholdOfPlayer))
+        if (gameManager.IsPlayerTooCloseToCamera(transform, distanceThresholdOfPlayer))
         {
             // we should be fleeing
             currentCharacterState = CharacterStates.Fleeing;
@@ -240,10 +228,10 @@ public class CharacterController : MonoBehaviour
             }
 
         }
-        else if (currentCharacterState == CharacterStates.Fleeing && gameManager.IsPlayerTooCloseToCamera(transform, distanceThresholdOfPlayer))
+        else if (gameManager.IsPlayerTooCloseToCamera(transform, distanceThresholdOfPlayer))
         {
             /// if we are still too far away move closer
-            if (currentCharacterState == CharacterStates.Fleeing && Vector3.Distance(transform.position, CurrentTargetPosition) > minDistanceToTarget)
+            if (Vector3.Distance(transform.position, CurrentTargetPosition) > minDistanceToTarget)
             {
                 Vector3 targetPosition = new Vector3(CurrentTargetPosition.x, transform.position.y, CurrentTargetPosition.z); // the positon we want to move towards
                 Vector3 nextMovePosition = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime * 1.5f); // the amount we should move towards that position
@@ -255,7 +243,7 @@ public class CharacterController : MonoBehaviour
             }
 
         }
-        else if (currentCharacterState == CharacterStates.Fleeing && gameManager.IsPlayerTooCloseToCamera(transform, distanceThresholdOfPlayer) == false)
+        else if (gameManager.IsPlayerTooCloseToCamera(transform, distanceThresholdOfPlayer) == false)
         {
             // if we are still fleeing, then we want to transition back to our roaming state.
             currentCharacterState = CharacterStates.Roaming;
@@ -272,8 +260,7 @@ public class CharacterController : MonoBehaviour
     private void HandlePlayingState()
     {
         // we want to kick the ball cause are close enough.
-        if(currentCharacterState == CharacterStates.Playing)
-        {
+        
             // here would should be running
             if (animationHandler.CurrentState != AnimationHandler.AnimationState.Passing)
             {
@@ -287,7 +274,7 @@ public class CharacterController : MonoBehaviour
                 CurrentTargetPosition = currentSoccerBall.position;
                 currentCharacterState = CharacterStates.Roaming;
             }        
-        }
+        
     }
 
     /// <summary>
